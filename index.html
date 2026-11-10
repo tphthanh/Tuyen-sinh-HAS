@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="vi" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Open Day 2026 - Trường Phổ thông Liên cấp H.A.S</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- React & ReactDOM -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <!-- Babel -->
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <!-- Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+  <style>
+    body { font-family: 'Plus Jakarta Sans', sans-serif; }
+    .bg-grid-pattern {
+      background-image: radial-gradient(rgba(249, 115, 22, 0.12) 1px, transparent 1px);
+      background-size: 24px 24px;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-orange-500 selection:text-white">
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect } = React;
+
+    function App() {
+      // Countdown Timer state
+      const [timeLeft, setTimeLeft] = useState({ days: 12, hours: 8, minutes: 45, seconds: 20 });
+
+      // Form state
+      const [formData, setFormData] = useState({
+        parentName: '',
+        phone: '',
+        studentName: '',
+        grade: 'Lớp 1',
+        session: 'Buổi sáng (08:30 - 11:30)'
+      });
+      const [isSubmitted, setIsSubmitted] = useState(false);
+      const [registeredCount, setRegisteredCount] = useState(186);
+
+      // Mini-game quà tặng may mắn
+      const [giftRevealed, setGiftRevealed] = useState(false);
+      const [wonGift, setWonGift] = useState('');
+
+      useEffect(() => {
+        const timer = setInterval(() => {
+          setTimeLeft(prev => {
+            if (prev.seconds > 0) return { ...prev, seconds: prev.seconds - 1 };
+            if (prev.minutes > 0) return { ...prev, minutes: 59, seconds: 59 };
+            if (prev.hours > 0) return { ...prev, hours: prev.hours - 1, minutes: 59, seconds: 59 };
+            if (prev.days > 0) return { ...prev, days: prev.days - 1, hours: 23, minutes: 59, seconds: 59 };
+            return prev;
+          });
+        }, 1000);
+        return () => clearInterval(timer);
+      }, []);
+
+      const handleSubmit = (e) => {
+        e.preventDefault();
+        if (!formData.parentName || !formData.phone) return;
+        
+        setIsSubmitted(true);
+        setRegisteredCount(prev => prev + 1);
+
+        if (window.confetti) {
+          window.confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } });
+        }
+      };
+
+      const handleOpenGift = () => {
+        if (giftRevealed) return;
+        const gifts = [
+          'Học bổng trải nghiệm 10% học phí kỳ I',
+          'Bộ quà tặng độc quyền Robot Issac (Bình nước + Áo thun)',
+          'Voucher kiểm tra năng lực tư duy chuẩn Cambridge miễn phí',
+          'Gói đồng phục thể thao H.A.S cao cấp'
+        ];
+        const randomGift = gifts[Math.floor(Math.random() * gifts.length)];
+        setWonGift(randomGift);
+        setGiftRevealed(true);
+
+        if (window.confetti) {
+          window.confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col bg-slate-50">
+          
+          {/* Top Announcement Bar */}
+          <div className="bg-gradient-to-r from-orange-600 via-amber-500 to-orange-600 text-white text-xs md:text-sm font-bold py-2 px-4 text-center flex items-center justify-center gap-2 shadow-sm">
+            <span>🔥 Ưu đãi Open Day: Miễn 100% phí đăng ký & Tặng bài kiểm tra năng lực đầu vào!</span>
+            <a href="#register" className="underline hover:text-orange-100 font-extrabold ml-1">Đăng ký ngay →</a>
+          </div>
+
+          {/* Navigation Bar */}
+          <nav className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 h-20 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-11 h-11 bg-orange-500 rounded-2xl flex items-center justify-center text-white font-black text-xl shadow-md shadow-orange-500/20">
+                  H
+                </div>
+                <div>
+                  <div className="font-extrabold text-base md:text-lg text-slate-900 leading-tight">TRƯỜNG LIÊN CẤP H.A.S</div>
+                  <div className="text-[11px] font-bold text-orange-600 tracking-wider uppercase">Khởi Đầu Tương Lai Vững Chắc</div>
+                </div>
+              </div>
+
+              <div className="hidden md:flex items-center gap-8 text-sm font-bold text-slate-600">
+                <a href="#about" className="hover:text-orange-600 transition-colors">Về H.A.S</a>
+                <a href="#activities" className="hover:text-orange-600 transition-colors">Hoạt Động</a>
+                <a href="#schedule" className="hover:text-orange-600 transition-colors">Lịch Trình</a>
+                <a href="#gift" className="hover:text-orange-600 transition-colors">Quà Tặng Sự Kiện</a>
+              </div>
+
+              <a 
+                href="#register" 
+                className="px-5 py-2.5 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-black text-xs md:text-sm rounded-xl shadow-lg shadow-orange-500/25 transition-all"
+              >
+                Giữ Chỗ Tham Dự
+              </a>
+            </div>
+          </nav>
+
+          {/* Hero Section */}
+          <section className="relative overflow-hidden pt-12 pb-20 md:py-24 bg-gradient-to-b from-orange-50/60 via-white to-slate-50 bg-grid-pattern">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                
+                <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
+                  <div className="inline-flex items-center gap-2 bg-orange-100/80 border border-orange-200 text-orange-700 text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider">
+                    ✨ NGÀY HỘI TRẢI NGHIỆM VÀ ĐỊNH HƯỚNG TƯƠNG LAI 2026
+                  </div>
+
+                  <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15]">
+                    Đánh Thức Tiềm Năng, <br />
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-500">
+                      Vững Bước Hội Nhập
+                    </span>
+                  </h1>
+
+                  <p className="text-base sm:text-lg text-slate-600 max-w-xl mx-auto lg:mx-0 leading-relaxed font-normal">
+                    Trân trọng kính mời Quý Phụ huynh cùng các em học sinh tham quan không gian giáo dục chuẩn quốc tế, tham gia lớp học STEAM sáng tạo và nhận những suất học bổng tuyển sinh đặc biệt tại <b>H.A.S Open Day</b>.
+                  </p>
+
+                  {/* Countdown Timer */}
+                  <div className="pt-2">
+                    <div className="text-xs font-extrabold uppercase tracking-wider text-slate-400 mb-3">
+                      Sự kiện sẽ bắt đầu sau:
+                    </div>
+                    <div className="flex items-center justify-center lg:justify-start gap-3 text-slate-800">
+                      {[
+                        { label: 'Ngày', val: timeLeft.days },
+                        { label: 'Giờ', val: timeLeft.hours },
+                        { label: 'Phút', val: timeLeft.minutes },
+                        { label: 'Giây', val: timeLeft.seconds }
+                      ].map((item, idx) => (
+                        <div key={idx} className="bg-white border border-slate-200 shadow-sm rounded-2xl p-3 min-w-[70px] text-center">
+                          <div className="text-2xl font-black text-orange-600">{String(item.val).padStart(2, '0')}</div>
+                          <div className="text-[10px] font-bold text-slate-400 uppercase">{item.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="pt-4 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
+                    <a
+                      href="#register"
+                      className="w-full sm:w-auto px-8 py-4 bg-orange-500 hover:bg-orange-600 active:scale-95 text-white font-black text-base rounded-2xl shadow-xl shadow-orange-500/30 transition-all flex items-center justify-center gap-2"
+                    >
+                      Đăng Ký Tham Dự Miễn Phí
+                      <span>→</span>
+                    </a>
+                    <a
+                      href="#schedule"
+                      className="w-full sm:w-auto px-7 py-4 bg-white hover:bg-slate-100 text-slate-700 font-bold text-base rounded-2xl border border-slate-200 transition-all text-center"
+                    >
+                      Xem Lịch Trình Chi Tiết
+                    </a>
+                  </div>
+
+                  <div className="flex items-center justify-center lg:justify-start gap-3 pt-2 text-xs font-bold text-slate-500">
+                    <span className="flex items-center gap-1 text-emerald-600">
+                      <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                      Đã có {registeredCount} phụ huynh đăng ký
+                    </span>
+                    <span>•</span>
+                    <span>Chỉ còn 35 suất quà tặng sớm</span>
+                  </div>
+                </div>
+
+                {/* Card mô phỏng thông tin sự kiện */}
+                <div className="lg:col-span-5">
+                  <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-orange-100 relative">
+                    <div className="absolute -top-3 -right-3 bg-gradient-to-r from-red-500 to-orange-500 text-white text-[11px] font-black uppercase px-3 py-1 rounded-xl shadow-md">
+                      Vé Vào Cửa Tự Do
+                    </div>
+
+                    <div className="space-y-5">
+                      <div className="border-b border-slate-100 pb-4">
+                        <div className="text-xs font-extrabold text-orange-600 uppercase tracking-wider mb-1">Thời gian & Địa điểm</div>
+                        <h3 className="text-lg font-black text-slate-800">H.A.S OPEN DAY 2026</h3>
+                      </div>
+
+                      <div className="space-y-4 text-sm">
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-9 h-9 bg-orange-100 text-orange-600 rounded-xl flex items-center justify-center shrink-0 text-base">
+                            📅
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-slate-800">Chủ Nhật, ngày 22 tháng 11, 2026</div>
+                            <div className="text-xs text-slate-500">08:00 - 12:00 (Buổi Sáng) & 14:00 - 17:00 (Buổi Chiều)</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-9 h-9 bg-cyan-100 text-cyan-600 rounded-xl flex items-center justify-center shrink-0 text-base">
+                            📍
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-slate-800">Khuôn viên Trường Phổ thông Liên cấp H.A.S</div>
+                            <div className="text-xs text-slate-500">Hà Nội (Khu đô thị sinh thái & giáo dục)</div>
+                          </div>
+                        </div>
+
+                        <div className="flex items-start gap-3.5">
+                          <div className="w-9 h-9 bg-purple-100 text-purple-600 rounded-xl flex items-center justify-center shrink-0 text-base">
+                            🎁
+                          </div>
+                          <div>
+                            <div className="font-extrabold text-slate-800">Quà tặng check-in đặc quyền</div>
+                            <div className="text-xs text-slate-500">Bộ quà tặng Robot Issac, Sticker H.A.S & Học bổng 10% - 30%</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="pt-2">
+                        <a
+                          href="#register"
+                          className="block text-center w-full py-3.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold text-xs uppercase tracking-wider rounded-xl transition-all"
+                        >
+                          Điền Thông Tin Nhận Vé Mời →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </section>
+
+          {/* 4 Giá Trị Nổi Bật */}
+          <section id="about" className="py-20 bg-white border-y border-slate-100">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="text-center max-w-2xl mx-auto mb-16 space-y-3">
+                <span className="text-xs font-black uppercase text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
+                  HỆ SINH THÁI GIÁO DỤC H.A.S
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-black text-slate-900">
+                  Tại Sao Hơn 1.200 Phụ Huynh Lựa Chọn H.A.S?
+                </h2>
+                <p className="text-sm text-slate-500">
+                  Chương trình liên cấp từ Tiểu học đến THPT kết hợp hài hòa giữa tri thức chuẩn quốc tế và giá trị nhân văn Việt Nam.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {[
+                  {
+                    icon: '🌐',
+                    color: 'bg-blue-50 text-blue-600',
+                    title: 'Song Ngữ Chuẩn Cambridge',
+                    desc: 'Phát triển năng lực ngôn ngữ tự nhiên với đội ngũ chuyên gia và giáo viên bản ngữ giàu kinh nghiệm.'
+                  },
+                  {
+                    icon: '🤖',
+                    color: 'bg-orange-50 text-orange-600',
+                    title: 'STEAM & Công Nghệ AI',
+                    desc: 'Tiếp cận lập trình Robotics, tư duy máy tính và phương pháp học theo dự án (PBL) từ lớp 1.'
+                  },
+                  {
+                    icon: '🎯',
+                    color: 'bg-emerald-50 text-emerald-600',
+                    title: 'Kỹ Năng Thế Kỷ 21',
+                    desc: 'Rèn luyện bản lĩnh thuyết trình, tư duy phản biện, làm việc nhóm và năng lực lãnh đạo bản thân.'
+                  },
+                  {
+                    icon: '🏫',
+                    color: 'bg-purple-50 text-purple-600',
+                    title: 'Cơ Sở Vật Chất Hiện Đại',
+                    desc: 'Phòng Lab chuẩn quốc tế, sân bóng đá cỏ nhân tạo, nhà thi đấu đa năng và thư viện thông minh 4.0.'
+                  }
+                ].map((item, idx) => (
+                  <div key={idx} className="p-6 rounded-3xl bg-slate-50 border border-slate-100 hover:border-orange-200 hover:shadow-xl hover:-translate-y-1 transition-all">
+                    <div className="text-3xl mb-4">{item.icon}</div>
+                    <h3 className="font-black text-base text-slate-800 mb-2">{item.title}</h3>
+                    <p className="text-xs text-slate-500 leading-relaxed">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Lịch Trình Sự Kiện */}
+          <section id="schedule" className="py-20 bg-slate-50">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6">
+              <div className="text-center mb-16 space-y-3">
+                <span className="text-xs font-black uppercase text-orange-600 bg-orange-100 px-3 py-1 rounded-full">
+                  TIMELINE SỰ KIỆN
+                </span>
+                <h2 className="text-2xl sm:text-4xl font-black text-slate-900">
+                  Lịch Trình Hoạt Động Trải Nghiệm
+                </h2>
+                <p className="text-sm text-slate-500">Thiết kế song song dành riêng cho cả Phụ huynh và các bạn Học sinh.</p>
+              </div>
+
+              <div className="space-y-4">
+                {[
+                  {
+                    time: '08:00 - 08:45',
+                    title: 'Đón tiếp & Check-in Nhận Quà',
+                    parent: 'Thưởng trà & cafe giao lưu, nhận bộ tài liệu tuyển sinh và quà kỷ niệm từ Robot Issac.',
+                    student: 'Nhận bảng tên nhà thám hiểm nhí và sticker định danh đội nhóm.'
+                  },
+                  {
+                    time: '08:45 - 10:00',
+                    title: 'Lớp Học Trải Nghiệm & Tọa Đàm Phụ Huynh',
+                    parent: 'Tọa đàm: "Đồng hành cùng con bước vào kỷ nguyên số" cùng Ban giám hiệu và Chuyên gia giáo dục.',
+                    student: 'Tham gia lớp học mẫu: Chế tạo Robot thông minh, Thí nghiệm hóa học vui, Nghệ thuật sáng tạo.'
+                  },
+                  {
+                    time: '10:00 - 11:00',
+                    title: 'Tour Khám Phá Campus & Đánh Giá Năng Lực',
+                    parent: 'Tham quan hệ thống phòng chức năng, nhà ăn chuẩn ISO và bể bơi bốn mùa.',
+                    student: 'Tham gia bài test tư duy logic và tiếng Anh tương tác phản xạ nhanh.'
+                  },
+                  {
+                    time: '11:00 - 11:45',
+                    title: 'Tư Vấn Chuyên Sâu & Bốc Thăm Học Bổng',
+                    parent: 'Tư vấn lộ trình học tập 1-1, công bố chính sách học phí và vòng quay may mắn.',
+                    student: 'Chụp hình kỷ niệm cùng linh vật trường và nhận huy hiệu danh dự H.A.S.'
+                  }
+                ].map((slot, idx) => (
+                  <div key={idx} className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-sm flex flex-col md:flex-row gap-5 items-start">
+                    <div className="px-4 py-2 bg-orange-100/80 text-orange-700 font-black text-xs rounded-xl shrink-0">
+                      {slot.time}
+                    </div>
+                    <div className="flex-1 space-y-2">
+                      <h3 className="font-black text-base text-slate-800">{slot.title}</h3>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1 text-xs">
+                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                          <span className="font-bold text-orange-600 block mb-1">👨‍👩‍👦 Dành cho Phụ huynh:</span>
+                          <span className="text-slate-600">{slot.parent}</span>
+                        </div>
+                        <div className="bg-slate-50 p-3 rounded-2xl border border-slate-100">
+                          <span className="font-bold text-cyan-600 block mb-1">🎒 Dành cho Học sinh:</span>
+                          <span className="text-slate-600">{slot.student}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* Interactive Gift Box (Mở Hộp Quà Nhận Học Bổng) */}
+          <section id="gift" className="py-20 bg-gradient-to-tr from-orange-500 via-amber-500 to-orange-600 text-white relative overflow-hidden">
+            <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-6 relative z-10">
+              <span className="inline-block bg-white/20 text-white text-xs font-black px-4 py-1.5 rounded-full uppercase tracking-wider backdrop-blur-sm">
+                ĐẶC QUYỀN TRỰC TUYẾN
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-black">
+                Mở Hộp Quà Bí Mật Dành Riêng Cho Bạn
+              </h2>
+              <p className="text-orange-100 text-sm max-w-xl mx-auto">
+                Bấm vào hộp quà bên dưới để kích hoạt phần quà tuyển sinh hoặc học bổng đặc quyền tại sự kiện!
+              </p>
+
+              <div className="pt-4">
+                {!giftRevealed ? (
+                  <button
+                    onClick={handleOpenGift}
+                    className="group bg-white hover:bg-orange-50 text-slate-900 rounded-3xl p-8 sm:p-10 shadow-2xl transition-all duration-300 hover:scale-105 mx-auto flex flex-col items-center gap-3 border-4 border-amber-200"
+                  >
+                    <div className="text-6xl animate-bounce">🎁</div>
+                    <div className="font-black text-lg text-orange-600">CHẠM ĐỂ MỞ QUÀ BÍ MẬT</div>
+                    <div className="text-xs font-semibold text-slate-400">100% người đăng ký đều nhận được quà</div>
+                  </button>
+                ) : (
+                  <div className="bg-white text-slate-900 rounded-3xl p-8 max-w-md mx-auto shadow-2xl border-4 border-amber-300 animate-fade-in space-y-4">
+                    <div className="text-4xl">🎉</div>
+                    <div className="text-xs font-black text-orange-600 uppercase tracking-wider">CHÚC MỪNG QUÝ PHỤ HUYNH!</div>
+                    <div className="text-xl font-black text-slate-800 leading-snug">{wonGift}</div>
+                    <p className="text-xs text-slate-500">Mã ưu đãi đã được lưu. Hãy hoàn tất form đăng ký bên dưới để nhận mã xác nhận qua SMS!</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+
+          {/* Form Đăng Ký Dự Tuyển & Giữ Chỗ */}
+          <section id="register" className="py-20 bg-slate-50">
+            <div className="max-w-3xl mx-auto px-4 sm:px-6">
+              <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-slate-200/80">
+                
+                <div className="text-center mb-8 space-y-2">
+                  <div className="w-12 h-12 bg-orange-100 text-orange-600 rounded-2xl flex items-center justify-center mx-auto text-xl font-bold">
+                    ✍️
+                  </div>
+                  <h2 className="text-2xl sm:text-3xl font-black text-slate-900">
+                    Đăng Ký Tham Dự H.A.S Open Day 2026
+                  </h2>
+                  <p className="text-xs sm:text-sm text-slate-500">
+                    Vui lòng điền thông tin để Ban tổ chức chuẩn bị chu đáo tài liệu và quà đón tiếp.
+                  </p>
+                </div>
+
+                {!isSubmitted ? (
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          Họ và tên Phụ huynh *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          placeholder="Nguyễn Văn A"
+                          value={formData.parentName}
+                          onChange={(e) => setFormData({ ...formData, parentName: e.target.value })}
+                          className="w-full text-sm px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          Số điện thoại liên hệ *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          placeholder="0912 345 678"
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className="w-full text-sm px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          Họ và tên Học sinh
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Nguyễn Minh Khang"
+                          value={formData.studentName}
+                          onChange={(e) => setFormData({ ...formData, studentName: e.target.value })}
+                          className="w-full text-sm px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                          Khối lớp quan tâm
+                        </label>
+                        <select
+                          value={formData.grade}
+                          onChange={(e) => setFormData({ ...formData, grade: e.target.value })}
+                          className="w-full text-sm px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-orange-500 font-medium"
+                        >
+                          <option value="Tiền tiểu học (5 tuổi)">Tiền tiểu học (5 tuổi)</option>
+                          <option value="Lớp 1">Lớp 1</option>
+                          <option value="Lớp 2 - 5">Khối Tiểu học (Lớp 2 - 5)</option>
+                          <option value="Lớp 6 - 9">Khối THCS (Lớp 6 - 9)</option>
+                          <option value="Lớp 10 - 12">Khối THPT (Lớp 10 - 12)</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                        Khung giờ tham gia phù hợp
+                      </label>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        {['Buổi sáng (08:30 - 11:30)', 'Buổi chiều (14:00 - 17:00)'].map((session, idx) => (
+                          <label
+                            key={idx}
+                            className={`p-3 border rounded-xl flex items-center gap-2 cursor-pointer text-xs font-bold transition-all ${
+                              formData.session === session
+                                ? 'border-orange-500 bg-orange-50/60 text-orange-700'
+                                : 'border-slate-200 bg-slate-50 text-slate-600'
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name="session"
+                              checked={formData.session === session}
+                              onChange={() => setFormData({ ...formData, session: session })}
+                              className="accent-orange-500"
+                            />
+                            {session}
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="pt-4">
+                      <button
+                        type="submit"
+                        className="w-full py-4 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 active:scale-98 text-white font-black text-base rounded-2xl shadow-xl shadow-orange-500/30 transition-all uppercase tracking-wider"
+                      >
+                        Xác Nhận Giữ Chỗ & Nhận Vé Mời VIP
+                      </button>
+                    </div>
+
+                    <p className="text-[11px] text-center text-slate-400">
+                      * Thông tin của Quý Phụ huynh được cam kết bảo mật theo tiêu chuẩn tuyển sinh của H.A.S.
+                    </p>
+                  </form>
+                ) : (
+                  <div className="text-center py-8 space-y-4">
+                    <div className="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto text-3xl font-black">
+                      ✓
+                    </div>
+                    <h3 className="text-2xl font-black text-slate-900">ĐĂNG KÝ THÀNH CÔNG!</h3>
+                    <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                      Cảm ơn Quý Phụ huynh <b>{formData.parentName}</b>. Ban tuyển sinh Trường Liên cấp H.A.S đã ghi nhận thông tin tham dự của gia đình vào <b>{formData.session}</b>.
+                    </p>
+                    <div className="p-4 bg-orange-50 border border-orange-200 rounded-2xl max-w-sm mx-auto text-xs font-medium text-orange-800">
+                      Mã vé mời điện tử và thư mời chi tiết đã được gửi tới số điện thoại <b>{formData.phone}</b>.
+                    </div>
+                    <button
+                      onClick={() => setIsSubmitted(false)}
+                      className="text-xs font-bold text-slate-400 hover:text-slate-600 underline pt-2"
+                    >
+                      Đăng ký thêm cho học sinh khác
+                    </button>
+                  </div>
+                )}
+
+              </div>
+            </div>
+          </section>
+
+          {/* Footer */}
+          <footer className="bg-slate-900 text-slate-400 text-xs py-12 border-t border-slate-800">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-8">
+                <div className="space-y-3">
+                  <div className="text-white font-black text-lg">TRƯỜNG LIÊN CẤP H.A.S</div>
+                  <p className="leading-relaxed">
+                    Hệ thống giáo dục liên cấp song ngữ định hướng phát triển toàn diện tư duy, phẩm chất và kỹ năng toàn cầu.
+                  </p>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-white font-bold text-sm">Liên Hệ Tuyển Sinh</div>
+                  <div>📍 Địa chỉ: Khu Đô Thị Sinh Thái & Giáo Dục H.A.S, Hà Nội</div>
+                  <div>📞 Hotline Tuyển sinh: (024) 7300 8866</div>
+                  <div>✉️ Email: admissions@has.edu.vn</div>
+                </div>
+                <div className="space-y-2">
+                  <div className="text-white font-bold text-sm">Thời Gian Làm Việc</div>
+                  <div>Thứ 2 - Thứ 6: 08:00 - 17:30</div>
+                  <div>Thứ 7 & Chủ Nhật: 08:30 - 16:30 (Trực tuyển sinh)</div>
+                </div>
+              </div>
+
+              <div className="pt-8 border-t border-slate-800 text-center text-slate-500">
+                © 2026 Trường Phổ thông Liên cấp H.A.S. All rights reserved.
+              </div>
+            </div>
+          </footer>
+
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+  </script>
+</body>
+</html>
